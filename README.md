@@ -44,10 +44,13 @@ cd BoxChat_Java
 👉 http://localhost:8080
 
 📂 Cấu hình Database
-- properties
-- Copy code
+- tạo database bằng mysql
+ ```
+CREATE DATABASE yourdatabase;
 ```
-spring.datasource.url=jdbc:mysql://localhost:3306/BoxChat_Java
+- properties
+```
+spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/
 spring.datasource.username=root
 spring.datasource.password=yourpassword
 ```
