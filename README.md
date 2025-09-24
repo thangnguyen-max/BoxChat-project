@@ -43,7 +43,7 @@ cd BoxChat_Java
 - Ứng dụng chạy tại:
 👉 http://localhost:8080
 
-📂 Cấu hình Database
+## 📂 Cấu hình Database
 - tạo database bằng mysql
  ```
 CREATE DATABASE yourdatabase;
@@ -54,7 +54,7 @@ spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/yourdatabase
 spring.datasource.username=root
 spring.datasource.password=yourpassword
 ```
-👨‍💻 Author: 
+## 👨‍💻 Author: 
 Thắng Nguyễn dev
 
 
