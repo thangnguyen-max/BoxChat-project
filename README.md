@@ -15,6 +15,20 @@ Người dùng có thể đăng ký, đăng nhập và chat trực tiếp 1-1.
 - Thymeleaf, javascript
 - MySQL, Lombok, Jackson
 
+## 🏗️ Kiến trúc ứng dụng
+
+ ┌──────────────┐       WebSocket/STOMP       ┌──────────────┐
+ │   Client     │ <-------------------------->│   Server     │
+ │ (Thymeleaf + │                             │ (Spring Boot │
+ │ JavaScript)  │   REST API (Auth, Upload)   │  + Security) │
+ └──────┬───────┘---------------------------->└──────┬───────┘
+        │                                          │
+        │                                          ▼
+        │                                      ┌─────────┐
+        │                                      │ MySQL DB│
+        │                                      └─────────┘
+
+
 ## ⚙️ Cài đặt
 ```bash
 git clone https://github.com/your-username/chat-app.git](https://github.com/thangnguyen-max/BoxChat-project.git BoxChat_Java
