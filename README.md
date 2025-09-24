@@ -50,7 +50,7 @@ CREATE DATABASE yourdatabase;
 ```
 - properties
 ```
-spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/
+spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/yourdatabase
 spring.datasource.username=root
 spring.datasource.password=yourpassword
 ```
