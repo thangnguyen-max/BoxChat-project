@@ -18,9 +18,14 @@ Người dùng có thể đăng ký, đăng nhập và chat trực tiếp 1-1.
 ## ⚙️ Cài đặt
 ```bash
 git clone https://github.com/your-username/chat-app.git](https://github.com/thangnguyen-max/BoxChat-project.git BoxChat_Java
+```
+```bash
 cd BoxChat_Java
+```
+```bash
 ./gradlew bootRun
-Ứng dụng chạy tại:
+```
+- Ứng dụng chạy tại:
 👉 http://localhost:8080
 
 📂 Cấu hình Database
