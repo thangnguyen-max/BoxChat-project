@@ -16,6 +16,7 @@ Người dùng có thể đăng ký, đăng nhập và chat trực tiếp 1-1.
 - MySQL, Lombok, Jackson
 
 ## 🏗️ Kiến trúc ứng dụng
+```
 
  ┌──────────────┐       WebSocket/STOMP       ┌──────────────┐
  │   Client     │ <-------------------------->│   Server     │
@@ -28,15 +29,15 @@ Người dùng có thể đăng ký, đăng nhập và chat trực tiếp 1-1.
         │                                      │ MySQL DB│
         │                                      └─────────┘
 
-
+```
 ## ⚙️ Cài đặt
-```bash
+```
 git clone https://github.com/your-username/chat-app.git](https://github.com/thangnguyen-max/BoxChat-project.git BoxChat_Java
 ```
-```bash
+```
 cd BoxChat_Java
 ```
-```bash
+```
 ./gradlew bootRun
 ```
 - Ứng dụng chạy tại:
@@ -45,7 +46,7 @@ cd BoxChat_Java
 📂 Cấu hình Database
 - properties
 - Copy code
-```bash
+```
 spring.datasource.url=jdbc:mysql://localhost:3306/BoxChat_Java
 spring.datasource.username=root
 spring.datasource.password=yourpassword
