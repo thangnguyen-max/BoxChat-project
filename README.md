@@ -30,7 +30,6 @@ spring.datasource.url=jdbc:mysql://localhost:3306/BoxChat_Java
 spring.datasource.username=root
 spring.datasource.password=yourpassword
 👨‍💻 Author
-Your Name
 Thắng Nguyễn dev
 
 
