@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="search" th:fragment="search">
+    <div class="searchForm">
+        <form onsubmit="" th:action="@{/}" method="get">
+            <label for="searchInput"></label>
+            <input name="keyword" th:value="${keyword}" type="text" placeholder="Find a user" id="searchInput"/>
+        </form>
+    </div>
+<!--&lt;!&ndash;    <input type="hidden" id="sessionId" th:value="${session.id}">&ndash;&gt;-->
+
+    <div th:each="userSearch : ${userSearch}">
+        <div th:if="${userSearch.name} != ${session.name}" style="display:flex; justify-content:space-between; align-items:center">
+            <a onclick="handle(this)" class="userChat" style="cursor: pointer;">
+                <input type="hidden" class="receiverName" th:value="${userSearch.name}">
+                <input type="hidden"  class="receiverId" th:value="${userSearch.id}">
+                <img th:src="@{'/static/file-upload/' + ${userSearch.avatar}}" alt=""/>
+                <div class="userChatInfo">
+                    <span th:text="${userSearch.name}"></span>
+                </div>
+            </a>
+            <div style="margin-right:10px">
+                <a href="javascript:void(0)" type="button" onclick="hideParent(this)">
+                    <img src="../../static/img/remove.png" height="15" width="15"/>
+                </a>
+            </div>
+        </div>
+    </div>
+<!--    <input type="hidden" id="receiverId" th:value="${user.id}">-->
+
+    <script>
+        function hideParent(element) {
+            // element là thẻ <a>, parentElement là <div> chứa nó
+            // parentElement.parentElement là div lớn bao quanh cả block
+            element.parentElement.parentElement.style.display = "none";
+        }
+    </script>
+
+
+</div>
+</body>
+</html>

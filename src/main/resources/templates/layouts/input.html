@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div class="input" th:fragment="input">
+  <input id="text" type="text" placeholder="Type something..."/>
+  <div class="send">
+    <input type="file" style="display:none" id="file"/>
+    <label for="file">
+      <img th:src="@{/img/link.png}" alt=""/>
+    </label>
+    <button id="send" onclick="sendMessage()" disabled>Send</button>
+  </div>
+</div>
+
+
+
+</body>
+</html>

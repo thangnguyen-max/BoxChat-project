@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+</head>
+<body>
+<div id="conversationDiv" style="visibility: hidden" class="chat" th:fragment="chat">
+    <div class="chatInfo">
+        <div id="receiverName"></div>
+        <div class="chatIcons">
+            <img th:src="@{/img/addUser.png}" alt=""/>
+            <img th:src="@{/img/camera.png}" alt=""/>
+            <img th:src="@{/img/more.png}" alt=""/>
+        </div>
+    </div>
+    <div th:replace="layouts/messages :: messages"></div>
+    <div th:replace="layouts/input :: input"></div>
+</div>
+</body>
+</html>

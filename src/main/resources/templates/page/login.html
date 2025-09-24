@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="FormContainer">
+    <div class="FormWrapper">
+        <span class="Logo">Box chat</span>
+        <span class="tittle">login</span>
+        <form th:action="@{/login}" method="post">
+            <label>
+                <input name="username" type="email" placeholder="email"/>
+            </label>
+            <label>
+                <input name="password" type="password" placeholder="password"/>
+            </label>
+            <button type="submit">Sign in</button>
+        </form>
+        <p>You don't have an account? <a th:href="@{/register}">Register</a></p>
+    </div>
+</div>
+</body>
+</html>

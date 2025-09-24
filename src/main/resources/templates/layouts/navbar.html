@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div class="navbar" th:fragment="navbar">
+    <span class="logo"><b>Box chat</b></span>
+    <div class="user">
+        <img th:src="@{'/static/file-upload/' + ${session.avatar}}" style="cursor: pointer;" alt=""/>
+        <span  th:text="${session.name}"></span>
+        <form th:action="@{/logout}" method="post">
+            <button class="btn-logout" style="background: #5d5b8d;
+                color: #ddddf7;
+                font-size: 10px;
+                border: none;
+                padding:7px;
+cursor: pointer;" type="submit">Logout
+            </button>
+        </form>
+
+    </div>
+</div>
+</body>
+</html>

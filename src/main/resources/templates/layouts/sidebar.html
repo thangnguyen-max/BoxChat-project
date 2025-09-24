@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="sidebar" th:fragment="sidebar">
+    <div th:replace="layouts/navbar :: navbar"></div>
+    <div th:replace="layouts/search :: search"></div>
+    <div th:replace="layouts/chats :: chats"></div>
+</div>
+</body>
+</html>

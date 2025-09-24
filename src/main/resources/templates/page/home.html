@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/static/style.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <script type="text/javascript">
+
+
+
+        let stompClient = null;
+        let currentSubscription = null;
+
+        function handle(element) {
+            var id = parseInt($(element).find(".receiverId").val());
+            document.getElementById('receiverId').value = id;
+            document.getElementById('conversationDiv').style.visibility
+                = 'visible';
+            connect(id);
+            sendChat(id, element)
+
+        }
+
+        function getCsrfToken() {
+            return {
+                header: document.querySelector('meta[name="_csrf_header"]').content,
+                token: document.querySelector('meta[name="_csrf"]').content
+            };
+        }
+
+        function sendChat(id, element) {
+            initInput()
+            const csrf = getCsrfToken();
+            fetch(`/chat/select/${id}`, {
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrf.header]: csrf.token
+                },
+                body: JSON.stringify({id: id})
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json()
+                })
+                .then(data => {
+                    console.log("Server trả về List:", data);
+
+                    const receiverName = document.getElementById("receiverName");
+                    receiverName.innerHTML = "";
+                    const receiver = $(element).find(".receiverName").val();
+                    receiver.innerHTML = "";
+
+                    let nameHTML = `<div><span>${receiver}</span></div>`
+                    let name = document.createElement('div');
+                    name.innerHTML = nameHTML;
+
+                    receiverName.appendChild(name.firstElementChild);
+
+                    const messages = document.getElementById("messages");
+                    messages.innerHTML = "";
+                    // data bây giờ là một array JSON
+
+
+                    data.forEach(msg => {
+                        const currentUserId = document.getElementById('sessionId').value;
+                        // console.log("session " + currentUserId)
+                        let isOwner = false;
+                        if (msg.sender.id == currentUserId) {
+                            isOwner = true;
+                        }
+                        // console.log("sender " + msg.sender.id)
+                        // console.log(isOwner)
+                        // console.log("Tin nhắn:", msg.text);
+                        let messageHTML = `
+        <div class=" ${isOwner ? 'message owner' : 'message  '}">
+        ${msg.text ? `<div class="massageInfo">
+                            <img src="/uploads/${msg.sender.avatar}" alt=""/>
+                            <span>Just now</span>
+                        </div>` : ``}
+ ${msg.image ? `<div class="massageInfo">
+                            <img src="/uploads/${msg.sender.avatar}" alt=""/>
+                            <span>Just now</span>
+                        </div>` : ``}
+             <div class="messageContent">
+        ${msg.text ? `<p>${msg.text}</p>` : ``}
+
+        ${msg.image ? `<img src="/uploads/${msg.image}" alt=""/>` : ``}
+               </div>
+        </div>
+    `;
+
+                        let message = document.createElement('div');
+                        message.innerHTML = messageHTML;
+
+                        messages.appendChild(message.firstElementChild); // lấy thẻ <div> bên trong
+                    })
+                    messages.scrollTop = messages.scrollHeight;
+                })
+        }
+
+
+
+        function initInput() {
+            const textInput = document.getElementById("text");
+            const fileInput = document.getElementById("file");
+            const sendBtn   = document.getElementById("send");
+
+            function toggleSendButton() {
+                const hasText = textInput.value.trim() !== "";
+                const hasFile = fileInput.files.length > 0;
+                sendBtn.disabled = !(hasText || hasFile);
+            }
+
+            textInput.addEventListener("input", toggleSendButton);
+            fileInput.addEventListener("change", toggleSendButton);
+            toggleSendButton();
+        }
+
+
+        function connect(receiverId) {
+
+            // Ngắt kết nối cũ nếu có
+            if (stompClient !== null) {
+                disconnect();
+            }
+            const socket = new SockJS('/chat');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function (frame) {
+                // console.log("Connected: " + frame);
+                setConnected(true);
+                const senderId = parseInt(document.getElementById('sessionId').value);
+                console.log("sender :" + senderId + "receiver: " + receiverId)
+                let chatId = senderId <= receiverId
+                    ? `${senderId}_${receiverId}`
+                    : `${receiverId}_${senderId}`
+                console.log(senderId < receiverId)
+                // subscribe đến hàng đợi tin nhắn riêng của receiverId
+                console.log(typeof senderId);
+                console.log(typeof receiverId)
+                let destination = `/topic/chat.${chatId}`;
+                console.log(chatId)
+                stompClient.subscribe(
+                    destination,
+                    function (messageOutput) {
+                        console.log("callback" + JSON.parse(messageOutput.body))
+                        showOutputMessage(JSON.parse(messageOutput.body));
+                        // <-- gọi ở đây
+                    },
+                    {id: "chat-sub"} // để có thể unsubscribe sau này
+                );
+            }, function (error) {
+                console.error(" Connection error:", error);
+                setConnected(false);
+                currentReceiverId = null;
+            });
+        }
+
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect(() => {
+                    console.log("Disconnected");
+                    setConnected(false);
+                    currentReceiverId = null;
+                });
+            }
+        }
+
+        function setConnected(connected) {
+            // bật/tắt khung chat
+            const conversationDiv = document.getElementById('conversationDiv');
+            if (conversationDiv) {
+                conversationDiv.style.visibility = connected ? 'visible' : 'hidden';
+            }
+
+            // disable/enable nút disconnect nếu có
+            const disconnectBtn = document.getElementById('disconnect');
+            if (disconnectBtn) {
+                disconnectBtn.disabled = !connected;
+            }
+
+            // clear khung tin nhắn khi chưa kết nối
+            if (!connected) {
+                const response = document.getElementById('response');
+                if (response) response.innerHTML = '';
+            }
+        }
+
+        function sendMessage() {
+
+            const csrf = getCsrfToken();
+            var sender = document.getElementById('sessionId').value;
+            const receiver = document.getElementById('receiverId').value;
+            console.log(sender, receiver)
+            var text = document.getElementById('text').value;
+
+            let formData = new FormData();
+            const file = document.getElementById("file").files[0];
+
+            if (file != null) {
+                formData.append("file", file);
+                fetch("/api/files/upload", {
+                    method: "POST",
+                    headers: {
+                        [csrf.header]: csrf.token
+                    },
+                    body: formData
+                })
+                    .then(res => res.text()) // server trả về URL
+                    .then(url => {
+                        console.log("File uploaded, URL:", url);
+                        stompClient.send("/app/chat", {},
+                            JSON.stringify({'sender': sender, 'receiver': receiver, 'text': text, 'image': url}))
+                    })
+            } else {
+                stompClient.send("/app/chat", {},
+                    JSON.stringify({'sender': sender, 'receiver': receiver, 'text': text}))
+            }
+            document.getElementById('text').value = "";
+            document.getElementById('file').value = "";
+        }
+
+        function showOutputMessage(message) {
+            initInput()
+            const messages = document.getElementById("messages");
+            const currentUserId = document.getElementById('sessionId').value;
+
+            const isOwner = message.senderId == currentUserId;
+
+            // đảm bảo luôn có avatar
+            const avatarPath = message.senderAvatar
+                ? `/uploads/${message.senderAvatar}`
+                : "/default.png";
+
+            const infoHTML = `
+        <div class="massageInfo">
+            <img src="${avatarPath}" alt="avatar"/>
+            <span>Just now</span>
+        </div>
+    `;
+
+            let contentHTML = "";
+            if (message.text) {
+                contentHTML += `<p>${message.text}</p>`;
+            }
+            if (message.image) {
+                contentHTML += `<img src="/uploads/${message.image}" alt="uploaded image"/>`;
+            }
+
+            const messageHTML = `
+        <div class="message ${isOwner ? 'owner' : ''}">
+            ${(message.text || message.image) ? infoHTML : ""}
+            <div class="messageContent">
+                ${contentHTML}
+            </div>
+        </div>
+    `;
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = messageHTML;
+            messages.appendChild(wrapper.firstElementChild);
+
+            messages.scrollTop = messages.scrollHeight;
+        }
+    </script>
+</head>
+<body>
+<div class="Home">
+    <div class="container">
+        <div th:replace="layouts/sidebar :: sidebar"></div>
+        <div th:replace="layouts/chat :: chat"></div>
+    </div>
+</div>
+</body>
+</html>
