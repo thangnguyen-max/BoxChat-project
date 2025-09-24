@@ -15,6 +15,28 @@ Người dùng có thể đăng ký, đăng nhập và chat trực tiếp 1-1.
 - Thymeleaf, javascript
 - MySQL, Lombok, Jackson
 
+## 📂 Cấu trúc dự án
+```
+BoxChat_java/
+│── src/
+│   ├── main/
+│   │   ├── java/com/example/chat/
+│   │   │   ├── ChatApplication.java     
+│   │   │   ├── config/                    
+│   │   │   ├── controller/                 
+│   │   │   ├── domain/                      
+│   │   │   ├── repository/              
+│   │   │   └── service/                  
+│   │   └── resources/
+│   │       ├── static/                 
+│   │       ├── templates/                 
+│   │       └── application.properties                     
+│   └── test/java/com/example/chat/       
+│                     
+└──  build.gradle 
+
+```
+
 ## 🏗️ Kiến trúc ứng dụng
 ```
 
