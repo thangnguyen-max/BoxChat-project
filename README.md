@@ -29,12 +29,14 @@ cd BoxChat_Java
 👉 http://localhost:8080
 
 📂 Cấu hình Database
-properties
-Copy code
+- properties
+- Copy code
+```bash
 spring.datasource.url=jdbc:mysql://localhost:3306/BoxChat_Java
 spring.datasource.username=root
 spring.datasource.password=yourpassword
-👨‍💻 Author
+```
+👨‍💻 Author: 
 Thắng Nguyễn dev
 
 
